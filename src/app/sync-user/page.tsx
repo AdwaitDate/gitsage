@@ -13,6 +13,8 @@ if (!userId){
 
 const client = await clerkClient()
 const user = await client.users.getUser(userId)
+// const users = await clerkClient.users.getUserList();
+// console.log(users);
 
 if (!user.emailAddresses[0]?.emailAddress){
   return notFound()
