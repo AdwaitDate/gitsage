@@ -12,6 +12,7 @@ import {
   UserButton,
 } from '@clerk/nextjs'
 import { TRPCReactProvider } from "@/trpc/react";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "GitSage",
@@ -33,6 +34,7 @@ export default function RootLayout({
     <html lang="en" className={`${geist.variable}`}>
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Toaster/>
       </body>
     </html>
     </ClerkProvider>
