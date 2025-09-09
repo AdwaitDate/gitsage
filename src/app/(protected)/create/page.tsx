@@ -37,7 +37,7 @@ const CreatePage = () => {
   }
   return (
     <div className="flex h-full items-center justify-center gap-12">
-      <img src="/Stock Trader Illustration.png" className="h-56 w-auto" />
+      <img src="/chatgptcreate.png" className="h-90 w-auto" />
       <div>
         <div>
           <h1 className="text-2xl font-semibold">
@@ -68,7 +68,7 @@ const CreatePage = () => {
                 
               />
               <div className="h-4"></div>
-              <Button type="submit">Create Project</Button>
+              <Button type="submit" className="text-dark">Create Project</Button>
             </form>
           </div>
         </div>

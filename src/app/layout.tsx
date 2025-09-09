@@ -13,6 +13,7 @@ import {
 } from '@clerk/nextjs'
 import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "next-themes";
 
 export const metadata: Metadata = {
   title: "GitSage",
@@ -31,10 +32,17 @@ export default function RootLayout({
   return (
     <ClerkProvider>
 
-    <html lang="en" className={`${geist.variable}`}>
+    <html lang="en" className={`${geist.variable}`} suppressHydrationWarning>
       <body>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
         <TRPCReactProvider>{children}</TRPCReactProvider>
-        <Toaster/>
+        <Toaster richColors/>
+        </ThemeProvider>
       </body>
     </html>
     </ClerkProvider>
