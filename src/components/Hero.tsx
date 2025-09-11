@@ -37,7 +37,7 @@ export function Hero() {
               src="/gitsage.mp4"
               autoPlay
               loop
-              
+              muted 
               playsInline
               className="h-auto w-full object-cover"
             />
