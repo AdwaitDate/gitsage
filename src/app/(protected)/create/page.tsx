@@ -1,8 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import useRefetch from "@/hooks/use-refetch";
 import { api } from "@/trpc/react";
-import React from "react";
+import React, { use } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -17,6 +18,7 @@ const CreatePage = () => {
   const createProject = api.project.createProject.useMutation({
 
   })
+  const refetch = useRefetch()
 
   function onSubmit(data: FormInput) {
     // window.alert(JSON.stringify(data));
@@ -27,6 +29,7 @@ const CreatePage = () => {
     },{
       onSuccess:()=>{
         toast.success("Project Created Successfully")
+        refetch()
         reset()
       },
       onError:()=>{
@@ -68,7 +71,9 @@ const CreatePage = () => {
                 
               />
               <div className="h-4"></div>
-              <Button type="submit" className="text-dark">Create Project</Button>
+              <Button type="submit" className="text-dark" disabled={createProject.isPending}>
+                Create Project
+              </Button>
             </form>
           </div>
         </div>
