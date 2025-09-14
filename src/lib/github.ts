@@ -6,7 +6,7 @@ export const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
 })
 
-const githubUrl = 'https://github.com/AdwaitDate/scrape-flow'
+// const githubUrl = 'https://github.com/AdwaitDate/scrape-flow'
 
 type Response ={
     commitHash:string;
@@ -16,6 +16,7 @@ type Response ={
     commitDate:string;
 
 }
+
 
 export const getCommitHashes = async(githubUrl:string):Promise<Response[]> =>{
     const [owner,repo] = githubUrl.split('/').slice(-2)

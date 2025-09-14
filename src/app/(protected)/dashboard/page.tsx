@@ -7,6 +7,7 @@ import React from 'react'
 import CommitLog from './commit-log'
 
 const Dashboard = () => {
+  
     const {project} = useProject()
   return (
     <div>
