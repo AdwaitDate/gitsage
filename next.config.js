@@ -6,7 +6,19 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
-    devIndicators: false
+    devIndicators: false,
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'img.clerk.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'images.clerk.dev',
+            },
+        ],
+    },
 };
 
 
