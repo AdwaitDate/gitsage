@@ -18,7 +18,8 @@ const CodeReferences = ({ filesReferences }: Props) => {
     return (
         <div className="max-w-[70vw]">
             <Tabs defaultValue={tab} value={tab} onValueChange={(value) => setTab(value)}>
-                <div className="overflow-scroll scrollbar-hide flex gap-2 bg-gray-200 p-1 rounded-md">
+                <div className="overflow-auto flex gap-2 p-2 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-100"
+>
                     {filesReferences.map((file) => (
                         <button
                             key={file.fileName}

@@ -33,12 +33,12 @@ const AskQuestionCard = () => {
   // const saveAnswer = api.question.saveAnswer.useMutation()
 
   const onSubmit1 = async (e: React.FormEvent<HTMLFormElement>) => {
-    setAnswer('')
-    setFilesReferences([])
+    setAnswer("");
+    setFilesReferences([]);
     e.preventDefault();
     if (!project?.id) return;
     setLoading(true);
-    
+
     const { output, filesReferenced } = await askquestion(question, project.id);
     setOpen(true);
     setFilesReferences(filesReferenced);
@@ -52,34 +52,47 @@ const AskQuestionCard = () => {
   };
   return (
     <>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className='sm:max-w-[80vw]'>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Image src="/logo.png" alt="Gitsage" height={40} width={40} />
-              <span>GitSage Answer</span>
-            </DialogTitle>
-          </DialogHeader>
+   
+  <Dialog open={open} onOpenChange={setOpen}>
+  <DialogContent
+    className="sm:max-w-[80vw] w-[90vw] max-h-[90vh] overflow-y-auto overflow-x-hidden p-6 rounded-2xl bg-background text-foreground"
+  >
+    {/* Header */}
+    <div className="flex items-center gap-2 flex-wrap mb-4">
+      <DialogTitle className="flex items-center flex-wrap">
+        <Image src="/logo.png" alt="Logo" width={40} height={40} />
+        <p className="ml-2 font-medium">Question:</p>
+        <p className="ml-2 break-words">{question}</p>
+      </DialogTitle>
+    </div>
 
-          <div className="space-y-6">
-            {/* Answer Section */}
-            <div>
-              <h2 className="text-lg font-semibold mb-3">Answer</h2>
-              <div className="max-h-[40vh] overflow-y-auto scrollbar-hide border rounded-md p-4 bg-muted/30">
-                <MDEditor.Markdown source={answer} className='max-w-full' />
-              </div>
-            </div>
+    {/* Answer Section */}
+    <div className="w-full">
+      <div className="rounded-lg border border-border bg-muted/10 p-4">
+        <MDEditor.Markdown
+          source={answer}
+          className="!max-w-full !w-full prose prose-invert dark:prose-invert"
+        />
+      </div>
+    </div>
 
-            {/* Code References Section */}
-            {filesReferences.length > 0 && (
-              <div>
-                <h2 className="text-lg font-semibold mb-3">Code References</h2>
-                <CodeReferences filesReferences={filesReferences}/>
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+    {/* Code References Section */}
+    <div className="mt-6 w-full">
+      <h2 className="text-lg font-semibold mb-2">Files Referenced</h2>
+      <div className="rounded-lg border border-border bg-muted/10 p-4">
+        <CodeReferences filesReferences={filesReferences} />
+      </div>
+    </div>
+
+    {/* Footer */}
+    <div className="mt-6 flex justify-end">
+      <Button onClick={() => setOpen(false)}>Close</Button>
+    </div>
+  </DialogContent>
+</Dialog>
+
+
+
 
       <Card className="relative col-span-3">
         <CardHeader>
@@ -93,7 +106,9 @@ const AskQuestionCard = () => {
               onChange={(e) => setQuestion(e.target.value)}
             />
             <div className="h-4"></div>
-            <Button type="submit" disabled={loading}>Ask Gitsage</Button>
+            <Button type="submit" disabled={loading}>
+              Ask Gitsage
+            </Button>
           </form>
         </CardContent>
       </Card>

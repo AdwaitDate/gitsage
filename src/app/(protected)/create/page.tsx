@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useRefetch from "@/hooks/use-refetch";
 import { api } from "@/trpc/react";
+import { useRouter } from 'next/navigation';
+
 import React, { use } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -19,7 +21,7 @@ const CreatePage = () => {
 
   })
   const refetch = useRefetch()
-
+ const router = useRouter()
   function onSubmit(data: FormInput) {
     // window.alert(JSON.stringify(data));
     createProject.mutate({
@@ -29,6 +31,7 @@ const CreatePage = () => {
     },{
       onSuccess:()=>{
         toast.success("Project Created Successfully")
+        router.push(`/dashboard`)
         refetch()
         reset()
       },
@@ -40,7 +43,7 @@ const CreatePage = () => {
   }
   return (
     <div className="flex h-full items-center justify-center gap-12">
-      <img src="/chatgptcreate.png" className="h-90 w-auto" />
+      <img src="/undraw_github.svg" className='h-56 w-auto' />
       <div>
         <div>
           <h1 className="text-2xl font-semibold">
