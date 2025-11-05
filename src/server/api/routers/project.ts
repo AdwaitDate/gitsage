@@ -1,4 +1,4 @@
-import z from "zod";
+import z, { string } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { pollCommits } from "@/lib/github";
 import { indexGithubRepo } from "@/lib/github-loader";
@@ -87,7 +87,50 @@ console.log("Users in DB", existingUser.map(u => u.id));
           createdAt: "desc"
         }
       })
-    })
+    }),
 
+    archiveProject: protectedProcedure.input(z.object({projectId: z.string()})).mutation(async({ctx,input})=>{
+      return await ctx.db.project.update({
+        where:{
+          id: input.projectId
+        },
+        data:{
+          deletedAt: new Date()
+        }
+      })
+    }),
+
+    uploadMeeting: protectedProcedure.input(z.object({projectId:z.string(),meetingUrl:z.string(),name:z.string()}))
+    .mutation(async({ctx,input})=>{
+      const meeting = await ctx.db.meeting.create({
+        data:{
+          meetingUrl:input.meetingUrl,
+          projectId:input.projectId,
+          name:input.name,
+          status:"PROCESSING",
+        }
+      })
+      return meeting;
+    }),
+    getMeetings: protectedProcedure.input(z.object({ projectId: z.string() })).query(async ({ ctx, input }) => {
+    return await ctx.db.meeting.findMany({
+      where: { projectId: input.projectId },
+      include: {
+        issues: true,
+        // createdBy: true,
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }),
+
+    deleteMeeting: protectedProcedure.input(z.object({meetingId: z.string()})).mutation(async({ctx,input})=>{
+      return await ctx.db.meeting.delete({
+        where:{
+          id: input.meetingId
+        }
+      })
+    }),
     
 });

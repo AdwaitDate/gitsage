@@ -30,7 +30,7 @@ const AskQuestionCard = () => {
     { fileName: string; sourceCode: string; summary: string }[]
   >([]);
   const [answer, setAnswer] = React.useState("");
-  const saveAnswer = api.project.saveAnswer.useMutation();
+  const saveAnswer = api.project.saveAnswer.useMutation()
 
   const onSubmit1 = async (e: React.FormEvent<HTMLFormElement>) => {
     setAnswer("");
@@ -52,63 +52,62 @@ const AskQuestionCard = () => {
   };
   return (
     <>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="bg-background text-foreground max-h-[90vh] w-[90vw] overflow-x-hidden overflow-y-auto rounded-2xl p-6 sm:max-w-[80vw]">
-          {/* Header */}
-          <div className="mb-4 flex flex-wrap items-center gap-2">
-            <DialogTitle className="flex flex-wrap items-center gap-3">
-              <Image src="/logo.png" alt="Logo" width={40} height={40} />
-              <p className="font-medium">Question:</p>
-              <p className="break-words">{question}</p>
-              <div className="ml-auto">
-                <Button
-                  disabled={saveAnswer.isPending}
-                  variant="outline"
-                  onClick={() => {
-                    saveAnswer.mutate(
-                      {
-                        projectId: project?.id!,
-                        question,
-                        answer,
-                        filesReferences,
-                      },
-                      {
-                        onSuccess: () => toast.success("Answer saved"),
-                        onError: () => toast.error("Failed to save answer"),
-                      },
-                    );
-                  }}
-                >
-                  Save Answer
-                </Button>
-              </div>
-            </DialogTitle>
-          </div>
+   
+  <Dialog open={open} onOpenChange={setOpen}>
+  <DialogContent
+    className="sm:max-w-[80vw] w-[90vw] max-h-[90vh] overflow-y-auto overflow-x-hidden p-6 rounded-2xl bg-background text-foreground"
+  >
+    {/* Header */}
+    <div className="flex items-center gap-2 flex-wrap mb-4">
+      <DialogTitle className="flex items-center flex-wrap">
+        <Image src="/logo.png" alt="Logo" width={40} height={40} />
+        <p className="ml-2 font-medium">Question:</p>
+        <p className="ml-2 mr-2 break-words">{question}</p>
+        <Button disabled={saveAnswer.isPending} variant={'outline'} onClick={() => {
+                            saveAnswer.mutate({
+                                projectId:project?.id!,
+                                question,
+                                answer,
+                                filesReferences
+                            }, {
+                                onSuccess: () => {
+                                    toast.success('Answer saved')
+                                },
+                                onError: () => {
+                                    toast.error('Failed to save answer')
+                                }
+                            })
+                        }} >Save Answer</Button>
+      </DialogTitle>
+    </div>
 
-          {/* Answer Section */}
-          <div className="w-full">
-            <div className="border-border bg-muted/10 rounded-lg border p-4">
-              <MDEditor.Markdown
-                source={answer}
-                className="prose prose-invert dark:prose-invert !w-full !max-w-full"
-              />
-            </div>
-          </div>
+    {/* Answer Section */}
+    <div className="w-full">
+      <div className="rounded-lg border border-border bg-muted/10 p-4">
+        <MDEditor.Markdown
+          source={answer}
+          className="!max-w-full !w-full prose prose-invert dark:prose-invert"
+        />
+      </div>
+    </div>
 
-          {/* Code References Section */}
-          <div className="mt-6 w-full">
-            <h2 className="mb-2 text-lg font-semibold">Files Referenced</h2>
-            <div className="border-border bg-muted/10 rounded-lg border p-4">
-              <CodeReferences filesReferences={filesReferences} />
-            </div>
-          </div>
+    {/* Code References Section */}
+    <div className="mt-6 w-full">
+      <h2 className="text-lg font-semibold mb-2">Files Referenced</h2>
+      <div className="rounded-lg border border-border bg-muted/10 p-4">
+        <CodeReferences filesReferences={filesReferences} />
+      </div>
+    </div>
 
-          {/* Footer */}
-          <div className="mt-6 flex justify-end">
-            <Button onClick={() => setOpen(false)}>Close</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+    {/* Footer */}
+    <div className="mt-6 flex justify-end">
+      <Button onClick={() => setOpen(false)}>Close</Button>
+    </div>
+  </DialogContent>
+</Dialog>
+
+
+
 
       <Card className="relative col-span-3">
         <CardHeader>

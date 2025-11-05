@@ -37,7 +37,15 @@ const CreatePage = () => {
       },
       onError:()=>{
         toast.error("Failed to create project")
-      }
+      },
+      // onLoadingChange:(isLoading)=>{
+      //   if(isLoading){
+      //     toast.loading("Creating Project...")
+      //   }else{
+      //     toast.dismiss()
+      //   }
+        
+      // } 
     })
     return true;
   }

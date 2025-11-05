@@ -6,6 +6,8 @@ import Link from 'next/link'
 import React from 'react'
 import CommitLog from './commit-log'
 import AskQuestionCard from './ask-question'
+import ArchiveButton from './archive-button'
+import MeetingCard from './meeting-card'
 
 const Dashboard = () => {
     const {project} = useProject()
@@ -32,7 +34,7 @@ const Dashboard = () => {
         <div className="flex items-center gap-4">
           Team members
           Invite button 
-          Archive Button 
+          <ArchiveButton />
         </div>
       </div>
 
@@ -40,7 +42,7 @@ const Dashboard = () => {
       <div className="mt-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
           <AskQuestionCard/>
-          Meeting Card 
+          <MeetingCard />
         </div>
       </div>
 
