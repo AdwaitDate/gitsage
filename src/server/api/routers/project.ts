@@ -2,7 +2,6 @@ import z, { string } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { pollCommits } from "@/lib/github";
 import { indexGithubRepo } from "@/lib/github-loader";
-import { clerkClient } from "@clerk/nextjs/server";
 
 export const projectRouter = createTRPCRouter({
   createProject: protectedProcedure
@@ -14,26 +13,11 @@ export const projectRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // Ensure user exists in database before creating project
-      const client = await clerkClient();
-      const clerkUser = await client.users.getUser(ctx.user.userId!);
-      
-      await ctx.db.user.upsert({
-        where: { emailAddress: clerkUser.emailAddresses[0]?.emailAddress ?? "" },
-        update: {
-          imageUrl: clerkUser.imageUrl,
-          firstName: clerkUser.firstName,
-          lastName: clerkUser.lastName,
-        },
-        create: {
-          id: ctx.user.userId!,
-          emailAddress: clerkUser.emailAddresses[0]?.emailAddress ?? "",
-          imageUrl: clerkUser.imageUrl,
-          firstName: clerkUser.firstName,
-          lastName: clerkUser.lastName,
-        },
-      });
-
+        console.log("Creating project with input:", input);
+        console.log("ctx.user.userId", ctx.user.userId);
+        console.log("ctx.user.userId", ctx.user.userId);
+const existingUser = await ctx.db.user.findMany();
+console.log("Users in DB", existingUser.map(u => u.id));
       const project = await ctx.db.project.create({
         data: {
           githubUrl: input.githubUrl,
