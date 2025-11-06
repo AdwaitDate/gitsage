@@ -18,7 +18,7 @@ import { ThemeProvider } from "next-themes";
 export const metadata: Metadata = {
   title: "GitSage",
   description: "All in one Git tool",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/gitsage-logo.svg" }],
 };
 
 const geist = Geist({
