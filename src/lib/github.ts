@@ -108,4 +108,4 @@ async function filterUnprocessedCommits(projectId:string,commitHashes:Response[]
     return unprocessedCommits
 }
 
-await pollCommits('cmfd2lqgu0009uya7vo6ub9qk').then((res)=>console.log(res)).catch((err)=>console.log(err))
+// await pollCommits('cmfd2lqgu0009uya7vo6ub9qk').then((res)=>console.log(res)).catch((err)=>console.log(err))

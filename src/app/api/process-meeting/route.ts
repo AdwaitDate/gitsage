@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse, type NextRequest } from "next/server";
 import z from "zod";
 
-export const maxDuration = 400; // 5 minutes
+export const maxDuration = 300; // 5 minutes (max for Vercel Hobby plan)
 
 const bodyParser = z.object({
     meetingUrl: z.string(),
