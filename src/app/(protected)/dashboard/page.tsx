@@ -32,8 +32,8 @@ const Dashboard = () => {
 
         <div className="h-4"></div>
         <div className="flex items-center gap-4">
-          Team members
-          Invite button 
+          {/* Team members
+          Invite button  */}
           <ArchiveButton />
         </div>
       </div>

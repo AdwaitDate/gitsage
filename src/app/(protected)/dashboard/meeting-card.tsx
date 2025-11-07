@@ -90,10 +90,10 @@ const MeetingCard = () => {
           <>
             <Presentation className="h-10 w-10 animate-bounce text-gray-700 dark:text-gray-200" />
             <h3 className="mt-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
-              Create a new meeting
+              Add a Training
             </h3>
             <p className="mt-1 text-center text-sm text-gray-500 dark:text-gray-400">
-              Analyse your meeting with GitSage.
+              Analyse your Training with GitSage.
               <br />
               Powered by AI.
             </p>
@@ -103,7 +103,7 @@ const MeetingCard = () => {
                 className="bg-gray-800 text-white hover:bg-gray-700 dark:bg-gray-200 dark:text-gray-900 dark:hover:bg-gray-300"
               >
                 <Upload className="mr-1.5 -ml-0.5 h-5 w-5" aria-hidden="true" />
-                Upload Meeting
+                Upload Training Video or Audio
                 <input className="hidden" {...getInputProps()} />
               </Button>
             </div>

@@ -22,10 +22,10 @@ const MeetingsPage = () => {
       <MeetingCard />
       <div className="h-6"></div>
 
-      <h1 className="text-xl font-semibold text-gray-100">All Meetings</h1>
+      <h1 className="text-xl font-semibold text-gray-100">All Trainings</h1>
 
       {meetings && meetings.length === 0 && (
-        <div className="text-sm text-gray-400 mt-2">No meetings yet</div>
+        <div className="text-sm text-gray-400 mt-2">No Trainings yet</div>
       )}
 
       {isLoading && (
@@ -83,7 +83,7 @@ const MeetingsPage = () => {
                     'opacity-50 pointer-events-none cursor-not-allowed'
                 )}
               >
-                View meeting
+                View Training Details
               </Link>
               <DeleteMeetingButton meetingId={meeting.id} />
             </div>
