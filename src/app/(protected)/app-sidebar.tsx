@@ -28,6 +28,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const items = [
   {
@@ -56,6 +57,7 @@ export function AppSidebar() {
   const pathname = usePathname();
   const { open } = useSidebar();
   const { projects, projectId, setProjectId } = useProject();
+  const router = useRouter()
 
   return (
     <Sidebar collapsible="icon" variant="floating">
@@ -79,7 +81,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
               {items.map((item) => {
-                const Icon = item.icon;
+                // const Icon = item.icon;
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
@@ -90,7 +92,8 @@ export function AppSidebar() {
                           pathname === item.url && "!bg-primary !text-white "
                         )}
                       >
-                        <Icon className="h-4 w-4" />
+                        {/* <Icon className="h-4 w-4" /> */}
+                        <item.icon/>
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -117,6 +120,7 @@ export function AppSidebar() {
                         className="flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer"
                         onClick={() => {
                           setProjectId(project.id);
+                          router.push(`/dashboard`)
                         }}
                       >
                         <div

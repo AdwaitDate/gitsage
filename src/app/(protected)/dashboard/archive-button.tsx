@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import useProject from "@/hooks/use-project";
 import useRefetch from "@/hooks/use-refetch";
 import { api } from "@/trpc/react";
+import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ArchiveButton() {
@@ -22,5 +23,7 @@ export default function ArchiveButton() {
                 toast.error('Failed to archive project');
             },
         })
-    }}>Archive</Button>
+    }}>
+        <Trash2 className="h-4 w-4 dark:text-destructive" />
+    </Button>
 }   

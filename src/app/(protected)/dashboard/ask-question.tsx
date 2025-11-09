@@ -53,7 +53,7 @@ const AskQuestionCard = () => {
     <>
       {/* Dialog for Answer */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[80vw] w-[90vw] max-h-[90vh] overflow-y-auto p-6 rounded-2xl bg-gray-900 text-gray-100 border border-gray-700">
+        <DialogContent className="sm:max-w-[80vw] max-w-[90vw] max-h-[90vh] overflow-y-auto p-6 rounded-2xl bg-gray-900 text-gray-100 border border-gray-700">
           {/* Header */}
           <div className="flex flex-wrap items-center gap-3 mb-4">
             <DialogTitle className="flex flex-wrap items-center gap-2">
@@ -93,7 +93,7 @@ const AskQuestionCard = () => {
             <div className="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
               <MDEditor.Markdown
                 source={answer}
-                className="!max-w-full !w-full prose prose-invert dark:prose-invert"
+                className=" max-w-[75vw] prose prose-invert dark"
               />
             </div>
           </div>

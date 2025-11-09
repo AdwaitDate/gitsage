@@ -3,7 +3,7 @@
 import useProject from "@/hooks/use-project";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { ExternalLink, GitCommit } from "lucide-react";
+import { ExternalLink, GitCommit, Sparkle } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
@@ -84,8 +84,11 @@ const CommitLog = () => {
                 {commit.summary && (
                   <div className="bg-muted/50 border border-border/50 rounded-lg p-4 space-y-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                      {/* <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
                         <div className="w-2 h-2 bg-white rounded-full" />
+                      </div> */}
+                      <div>
+                        <Sparkle className="w-5 h-5 animate-pulse" />
                       </div>
                       <span className="text-xs font-medium text-foreground">AI Summary</span>
                     </div>

@@ -97,4 +97,58 @@ export async function generateEmbedding(summary: string) {
     return embedding.values;
 }
 
+/**
+ * Extract line range from a git diff chunk
+ * Returns format like "10-25" or null if not found
+ */
+export function extractLineRange(diff: string): string | null {
+    try {
+        // Match the @@ -old_start,old_count +new_start,new_count @@ pattern
+        const match = diff.match(/@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/);
+        if (!match) return null;
+        
+        const startLine = parseInt(match[1] || '0');
+        const lineCount = parseInt(match[2] || '1');
+        const endLine = startLine + lineCount - 1;
+        
+        return `${startLine}-${endLine}`;
+    } catch (error) {
+        console.error('Error extracting line range:', error);
+        return null;
+    }
+}
+
+/**
+ * Format commit context for AI prompt
+ */
+export function formatCommitContext(commits: Array<{
+    commitHash: string;
+    commitAuthorName: string;
+    commitDate: string;
+    commitMessage: string;
+    fileName: string;
+    diffContent: string;
+    summary: string;
+}>): string {
+    if (!commits || commits.length === 0) {
+        return '';
+    }
+
+    let context = '\n\nRELEVANT COMMIT HISTORY:\n';
+    
+    for (const commit of commits) {
+        context += `\n---\n`;
+        context += `Commit: ${commit.commitHash.substring(0, 7)}\n`;
+        context += `Author: ${commit.commitAuthorName}\n`;
+        context += `Date: ${new Date(commit.commitDate).toLocaleDateString()}\n`;
+        context += `Message: ${commit.commitMessage}\n`;
+        context += `File: ${commit.fileName}\n`;
+        context += `Summary: ${commit.summary}\n`;
+        context += `Diff excerpt:\n\`\`\`diff\n${commit.diffContent.slice(0, 500)}${commit.diffContent.length > 500 ? '...' : ''}\n\`\`\`\n`;
+    }
+    
+    context += '\n---\n';
+    return context;
+}
+
 // console.log(await generateEmbeddings("Hello, world!"))

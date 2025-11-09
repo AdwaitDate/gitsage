@@ -30,6 +30,7 @@ model project {
   githubUrl            String
   deletedAt            DateTime?
   commits              Commit[]
+  commitDiffEmbeddings CommitDiffEmbedding[]
   meetings             Meeting[]
   savedQuestions       Question[]
   sourceCodeEmbeddings SourceCodeEmbedding[]
@@ -110,6 +111,22 @@ model Commit {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   project            project  @relation(fields: [projectId], references: [id])
+}
+
+model CommitDiffEmbedding {
+  id          String                 @id @default(cuid())
+  projectId   String
+  commitHash  String
+  fileName    String
+  diffContent String                 @db.Text
+  lines       String?
+  embedding   Unsupported("vector")
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  project     project                @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+  @@index([commitHash])
 }
 
 enum MeetingStatus {
