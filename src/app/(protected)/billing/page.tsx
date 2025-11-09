@@ -1,9 +1,10 @@
+import { Pricing } from '@/components/Pricing'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-      billing
+      <Pricing />
     </div>
   )
 }

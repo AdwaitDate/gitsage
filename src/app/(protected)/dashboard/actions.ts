@@ -1,24 +1,23 @@
-'use server'
+"use server";
 
-import { streamText } from 'ai';
-import { createStreamableValue } from '@ai-sdk/rsc';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { streamText } from "ai";
+import { createStreamableValue } from "@ai-sdk/rsc";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
-import { db } from '@/server/db';
-import { generateEmbedding } from '@/lib/gemini';
+import { db } from "@/server/db";
+import { generateEmbedding } from "@/lib/gemini";
 
 const google = createGoogleGenerativeAI({
-    apiKey: process.env.GEMINI_API_KEY,
+  apiKey: process.env.GEMINI_API_KEY,
 });
 
 export async function askquestion(question: string, projectId: string) {
-    const stream = createStreamableValue('');
+  const stream = createStreamableValue("");
 
+  const embedding = await generateEmbedding(question);
+  const vectorQuery = `[${embedding.join(",")}]`;
 
-    const embedding = await generateEmbedding(question);
-    const vectorQuery = `[${embedding.join(',')}]`;
-
-    const result = await db.$queryRaw`
+  const result = (await db.$queryRaw`
       SELECT
     "fileName",
     "sourceCode",
@@ -29,17 +28,17 @@ export async function askquestion(question: string, projectId: string) {
       AND "projectId" = ${projectId}
       ORDER BY  similarity DESC
       LIMIT 10;
-    ` as { fileName: string, sourceCode: string, summary: string }[];
-    let context = '';
+    `) as { fileName: string; sourceCode: string; summary: string }[];
+  let context = "";
 
-    for (const doc of result) {
-        context += `source:${doc.fileName}\ncode content:${doc.sourceCode}\nsummary of file:${doc.summary}\n\n`;
-    };
+  for (const doc of result) {
+    context += `source:${doc.fileName}\ncode content:${doc.sourceCode}\nsummary of file:${doc.summary}\n\n`;
+  }
 
-    (async () => {
-        const { textStream } = await streamText({
-            model: google('gemini-flash-latest'),
-            prompt: `
+  (async () => {
+    const { textStream } = await streamText({
+      model: google("gemini-flash-latest"),
+      prompt: `
             You are a ai code assistant who answers questions about the codebase. Your target audience is a technical intern who is looking to understand the codebase.
                     AI assistant is a brand new, powerful, human-like artificial intelligence.
       The traits of AI include expert knowledge, helpfulness, cleverness, and articulateness.
@@ -60,14 +59,14 @@ export async function askquestion(question: string, projectId: string) {
       AI assistant will not invent anything that is not drawn directly from the context.
       Answer in markdown syntax, with code snippets if needed. Be as detailed as possible when answering, make sure there is no ambiguity and include any and all relevant information to give context to the intern.
             `,
-        });
+    });
 
-        for await (const delta of textStream) {
-            stream.update(delta);
-        }
+    for await (const delta of textStream) {
+      stream.update(delta);
+    }
 
-        stream.done();
-    })();
+    stream.done();
+  })();
 
-    return { output: stream.value, filesReferenced: result };
+  return { output: stream.value, filesReferenced: result };
 }

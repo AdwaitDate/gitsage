@@ -23,6 +23,7 @@ const QuestionList = () => {
   const { data: questions, isLoading } = api.project.getQuestions.useQuery({ projectId })
   const [questionIdx, setQuestionIdx] = React.useState(0)
   const question = questions?.[questionIdx]
+  const { data: commits } = api.project.getCommits.useQuery({ projectId });
 
   if (isLoading) {
     return (
