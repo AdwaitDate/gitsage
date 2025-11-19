@@ -3,40 +3,42 @@ import { Octokit } from "octokit";
 import axios from "axios";
 import { aiSummariseCommit, generateEmbedding, extractLineRange } from "./gemini";
 import { Prisma } from "@prisma/client";
+import { env } from '@/env';
+
 export const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN,
+  auth: env.GITHUB_TOKEN,
 })
 
 const githubUrl = 'https://github.com/AdwaitDate/scrape-flow'
 
-type Response ={
-    commitHash:string;
-    commitMessage:string;
-    commitAuthorName:string;
-    commitAuthorAvatar:string;
-    commitDate:string;
+type Response = {
+  commitHash: string;
+  commitMessage: string;
+  commitAuthorName: string;
+  commitAuthorAvatar: string;
+  commitDate: string;
 
 }
 
-export const getCommitHashes = async(githubUrl:string):Promise<Response[]> =>{
-    const [owner,repo] = githubUrl.split('/').slice(-2)
-    if(!owner || !repo){
-        throw new Error('Invalid github url')
-    }
-    const {data} =await octokit.rest.repos.listCommits({
-        owner,
-        repo,
-    
-    })
-    const sortedCommits = data.sort((a:any,b:any)=> new Date(b.commit.author?.date || '').getTime() - new Date(a.commit.author?.date || '').getTime())
+export const getCommitHashes = async (githubUrl: string): Promise<Response[]> => {
+  const [owner, repo] = githubUrl.split('/').slice(-2)
+  if (!owner || !repo) {
+    throw new Error('Invalid github url')
+  }
+  const { data } = await octokit.rest.repos.listCommits({
+    owner,
+    repo,
 
-    return sortedCommits.slice(0,15).map((commit:any)=>({
-        commitHash:commit.sha as string,
-        commitMessage:commit.commit.message ?? " ",
-        commitAuthorName:commit.commit.author?.name ?? " ",
-        commitAuthorAvatar:commit.author?.avatar_url ?? " ",
-        commitDate:commit.commit.author?.date ?? " ",
-    }))
+  })
+  const sortedCommits = data.sort((a: any, b: any) => new Date(b.commit.author?.date || '').getTime() - new Date(a.commit.author?.date || '').getTime())
+
+  return sortedCommits.slice(0, 15).map((commit: any) => ({
+    commitHash: commit.sha as string,
+    commitMessage: commit.commit.message ?? " ",
+    commitAuthorName: commit.commit.author?.name ?? " ",
+    commitAuthorAvatar: commit.author?.avatar_url ?? " ",
+    commitDate: commit.commit.author?.date ?? " ",
+  }))
 }
 // console.log(await getCommitHashes(githubUrl))
 
@@ -60,7 +62,7 @@ export const pollCommits = async (projectId: string) => {
 
   const commits = await db.commit.createMany({
     data: summaries.map((summary, index) => {
-        console.log(`Processing commit:${index}`);
+      console.log(`Processing commit:${index}`);
       return {
         projectId,
         commitHash: unprocessedCommits[index]!.commitHash,
@@ -79,37 +81,37 @@ export const pollCommits = async (projectId: string) => {
   return commits;
 };
 
-  
-async function summariseCommit(githubUrl:string,commitHash:string){
-    //get the diff and pass it to gemini
-    const {data} = await axios.get(`${githubUrl}/commit/${commitHash}.diff`,{
-        headers:{
-            'Accept':'application/vnd.github.v3.diff',
-        }
-    })
-    return await aiSummariseCommit(data) || " "
-}
 
-async function  fetchProjectGithubUrl(projectId:string) {
-    const project = await db.project.findUnique({
-        where:{id:projectId},
-        select:{
-            githubUrl:true
-        }
-    })
-    if(!project?.githubUrl){
-        throw new Error('Project not linked to github')
+async function summariseCommit(githubUrl: string, commitHash: string) {
+  //get the diff and pass it to gemini
+  const { data } = await axios.get(`${githubUrl}/commit/${commitHash}.diff`, {
+    headers: {
+      'Accept': 'application/vnd.github.v3.diff',
     }
-    return {project,githubUrl:project?.githubUrl}
-    
+  })
+  return await aiSummariseCommit(data) || " "
 }
 
-async function filterUnprocessedCommits(projectId:string,commitHashes:Response[]){
-    const processedCommits = await db.commit.findMany({
-        where:{projectId},
-    })
-    const unprocessedCommits = commitHashes.filter((commit)=> !processedCommits.some((processedCommit)=> processedCommit.commitHash === commit.commitHash))
-    return unprocessedCommits
+async function fetchProjectGithubUrl(projectId: string) {
+  const project = await db.project.findUnique({
+    where: { id: projectId },
+    select: {
+      githubUrl: true
+    }
+  })
+  if (!project?.githubUrl) {
+    throw new Error('Project not linked to github')
+  }
+  return { project, githubUrl: project?.githubUrl }
+
+}
+
+async function filterUnprocessedCommits(projectId: string, commitHashes: Response[]) {
+  const processedCommits = await db.commit.findMany({
+    where: { projectId },
+  })
+  const unprocessedCommits = commitHashes.filter((commit) => !processedCommits.some((processedCommit) => processedCommit.commitHash === commit.commitHash))
+  return unprocessedCommits
 }
 
 /**
@@ -128,7 +130,7 @@ async function processCommitDiffs(
   for (const commit of commits) {
     try {
       // console.log(`Processing diffs for commit: ${commit.commitHash.substring(0, 7)}`);
-      
+
       // Fetch detailed commit data with file patches
       const { data: commitData } = await octokit.rest.repos.getCommit({
         owner,
@@ -198,7 +200,7 @@ async function processCommitDiffs(
             // Continue with next embedding
           }
         }
-        
+
         console.log(`Stored ${validEmbeddings.length} diff embeddings for commit ${commit.commitHash.substring(0, 7)}`);
       }
     } catch (error) {

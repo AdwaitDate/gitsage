@@ -1,28 +1,29 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { loadGithubRepo } from './github-loader'
 import { Document } from '@langchain/core/documents';
+import { env } from '@/env';
 
-const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const genAi = new GoogleGenerativeAI(env.GEMINI_API_KEY);
 const model = genAi.getGenerativeModel({ model: 'gemini-flash-latest' });
 
-export const summariseCode= async (doc:Document) => {
+export const summariseCode = async (doc: Document) => {
     // console.log("getting summary for", doc.metadata.source);
-    
-        const code = doc.pageContent.slice(0, 10000); // Limit to 10000 characters
 
-        const response = await model.generateContent([
-            `You are an intelligent senior software engineer who specialises in onboarding junior software engineers onto projects`,
-            `You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file`,
-            `Here is the code:
+    const code = doc.pageContent.slice(0, 10000); // Limit to 10000 characters
+
+    const response = await model.generateContent([
+        `You are an intelligent senior software engineer who specialises in onboarding junior software engineers onto projects`,
+        `You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file`,
+        `Here is the code:
             ----
               ${code}
             ----
             Give a summary no more than 100 words of the code above,`
-        ]);
+    ]);
 
-        console.log("got back summary", doc.metadata.source);
-        return response.response.text();
-    
+    console.log("got back summary", doc.metadata.source);
+    return response.response.text();
+
 }
 
 export const aiSummariseCommit = async (diff: string) => {
@@ -90,7 +91,7 @@ It is given only as an example of appropriate comments.`,
 
 export async function generateEmbedding(summary: string) {
     const model = genAi.getGenerativeModel({
-        model:'text-embedding-004'
+        model: 'text-embedding-004'
     })
     const result = await model.embedContent(summary);
     const embedding = result.embedding
@@ -106,11 +107,11 @@ export function extractLineRange(diff: string): string | null {
         // Match the @@ -old_start,old_count +new_start,new_count @@ pattern
         const match = diff.match(/@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/);
         if (!match) return null;
-        
+
         const startLine = parseInt(match[1] || '0');
         const lineCount = parseInt(match[2] || '1');
         const endLine = startLine + lineCount - 1;
-        
+
         return `${startLine}-${endLine}`;
     } catch (error) {
         console.error('Error extracting line range:', error);
@@ -135,7 +136,7 @@ export function formatCommitContext(commits: Array<{
     }
 
     let context = '\n\nRELEVANT COMMIT HISTORY:\n';
-    
+
     for (const commit of commits) {
         context += `\n---\n`;
         context += `Commit: ${commit.commitHash.substring(0, 7)}\n`;
@@ -146,7 +147,7 @@ export function formatCommitContext(commits: Array<{
         context += `Summary: ${commit.summary}\n`;
         context += `Diff excerpt:\n\`\`\`diff\n${commit.diffContent.slice(0, 500)}${commit.diffContent.length > 500 ? '...' : ''}\n\`\`\`\n`;
     }
-    
+
     context += '\n---\n';
     return context;
 }
