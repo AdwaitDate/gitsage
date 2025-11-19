@@ -2,6 +2,7 @@ import z, { string } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { pollCommits } from "@/lib/github";
 import { indexGithubRepo } from "@/lib/github-loader";
+import { after } from "next/server";
 
 export const projectRouter = createTRPCRouter({
   createProject: protectedProcedure
@@ -29,8 +30,10 @@ console.log("Users in DB", existingUser.map(u => u.id));
           },
         },
       });
-      await indexGithubRepo(project.id, input.githubUrl, input.githubToken);
-      await pollCommits(project.id);
+      after(async () => {
+        await indexGithubRepo(project.id, input.githubUrl, input.githubToken);
+        await pollCommits(project.id);
+      });
       
       return project;
     }),

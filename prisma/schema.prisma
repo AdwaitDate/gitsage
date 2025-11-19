@@ -33,6 +33,7 @@ model project {
   commitDiffEmbeddings CommitDiffEmbedding[]
   meetings             Meeting[]
   savedQuestions       Question[]
+  schemas              Schema[]
   sourceCodeEmbeddings SourceCodeEmbedding[]
   userToProjects       UserToProject[]
 }
@@ -127,6 +128,17 @@ model CommitDiffEmbedding {
 
   @@index([projectId])
   @@index([commitHash])
+}
+
+model Schema {
+  id         String   @id @default(cuid())
+  projectId  String
+  schemaText String   @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  project    project  @relation(fields: [projectId], references: [id])
+
+  @@unique([projectId])
 }
 
 enum MeetingStatus {

@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import {
   Bot,
   CreditCard,
+  Database,
   LayoutDashboard,
   Plus,
   Presentation,
@@ -45,6 +46,11 @@ const items = [
     title: "Meetings",
     url: "/meetings",
     icon: Presentation,
+  },
+  {
+    title: "SqlSage",
+    url: "/sql-sage",
+    icon: Database,
   },
   {
     title: "Billing",
